@@ -62,7 +62,10 @@ export class MessagesGateway {
   }
 
   @SubscribeMessage('typing')
-  async typing(@ConnectedSocket() client: Socket, isTyping: boolean) {
+  async typing(
+    @ConnectedSocket() client: Socket,
+    @MessageBody('isTyping') isTyping: boolean,
+  ) {
     const name = await this.messagesService.getClientName(client.id);
     client.broadcast.emit('typing', {
       name,
