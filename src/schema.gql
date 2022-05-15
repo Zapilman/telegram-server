@@ -2,29 +2,55 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Message {
+  text: String!
+  authorName: String!
+}
+
 type User {
+  id: ID!
+
   """Example field (placeholder)"""
   firstName: String!
+  secondName: String!
 }
 
 type Query {
+  messages: [Message!]!
+  message(id: Int!): Message!
   users: [User!]!
   user(id: Int!): User!
 }
 
 type Mutation {
+  createMessage(createMessageInput: CreateMessageInput!): Message!
+  updateMessage(updateMessageInput: UpdateMessageInput!): Message!
+  removeMessage(id: Int!): Message!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
 
+input CreateMessageInput {
+  text: String!
+  authorName: String!
+}
+
+input UpdateMessageInput {
+  text: String
+  authorName: String
+  id: Int!
+}
+
 input CreateUserInput {
   """Example field (placeholder)"""
-  exampleField: Int!
+  firstName: String!
+  secondName: String!
 }
 
 input UpdateUserInput {
   """Example field (placeholder)"""
-  exampleField: Int
+  firstName: String
+  secondName: String
   id: Int!
 }

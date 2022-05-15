@@ -6,25 +6,25 @@ import {
   WebSocketServer,
   ConnectedSocket,
 } from '@nestjs/websockets';
-import { MessagesService } from './messages.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { MessagesService } from 'src/Documents/messages/messages.service';
+import { CreateMessageInput } from 'src/Documents/messages/dto/create-message.input';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class MessagesGateway {
+export class ChatGateway {
   constructor(private readonly messagesService: MessagesService) {}
 
   @WebSocketServer()
   server: Server;
 
   @SubscribeMessage('createMessage')
-  create(@MessageBody() createMessageDto: CreateMessageDto) {
-    const message = this.messagesService.create(createMessageDto);
-    console.log(message);
+  async create(@MessageBody() createMessageDto: CreateMessageInput) {
+    const message = await this.messagesService.create(createMessageDto);
 
     this.server.emit('message', message);
 
@@ -55,9 +55,9 @@ export class MessagesGateway {
   joinRoom(
     @ConnectedSocket() client: Socket,
     @MessageBody('authorName') authorName: string,
-  ) {
-    const response = this.messagesService.identify(authorName, client.id);
-    console.log(response);
+  ): string {
+    //TODO: create identifying user
+    const response = 'User joined a channel';
     return response;
   }
 
@@ -66,7 +66,8 @@ export class MessagesGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody('isTyping') isTyping: boolean,
   ) {
-    const name = await this.messagesService.getClientName(client.id);
+    const name = 'User';
+    //TODO: connect to user document mongo
     client.broadcast.emit('typing', {
       name,
       isTyping,
