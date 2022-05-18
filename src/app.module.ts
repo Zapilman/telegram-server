@@ -6,11 +6,12 @@ import { AppService } from './app.service';
 import { EventsModule } from './events.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './Documents/users/users.module';
 import { join } from 'path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesModule } from './Documents/messages/messages.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
     MongooseModule.forRoot(
       'mongodb+srv://Zapilman:urazdorov12@cluster0.snu90.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
     ),
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

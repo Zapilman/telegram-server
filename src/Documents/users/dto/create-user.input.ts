@@ -8,4 +8,10 @@ export class CreateUserInput {
 
   @Field()
   secondName: string;
+
+  @Field()
+  login: string;
+
+  @Field()
+  password: string;
 }

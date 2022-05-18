@@ -13,6 +13,13 @@ type User {
   """Example field (placeholder)"""
   firstName: String!
   secondName: String!
+  login: String!
+  password: String!
+}
+
+type Token {
+  token: String!
+  expiresIn: String!
 }
 
 type Query {
@@ -20,6 +27,13 @@ type Query {
   message(id: Int!): Message!
   users: [User!]!
   user(id: Int!): User!
+  userByLogin(login: String!): User!
+  signIn(userCredentialsInput: userCredentialsInput!): User!
+}
+
+input userCredentialsInput {
+  login: String!
+  password: String!
 }
 
 type Mutation {
@@ -29,6 +43,7 @@ type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
+  signUp(createUserInput: CreateUserInput!): Token!
 }
 
 input CreateMessageInput {
@@ -46,11 +61,15 @@ input CreateUserInput {
   """Example field (placeholder)"""
   firstName: String!
   secondName: String!
+  login: String!
+  password: String!
 }
 
 input UpdateUserInput {
   """Example field (placeholder)"""
   firstName: String
   secondName: String
+  login: String
+  password: String
   id: Int!
 }
