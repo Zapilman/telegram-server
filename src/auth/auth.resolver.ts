@@ -4,6 +4,7 @@ import { CreateUserInput } from 'src/Documents/users/dto/create-user.input';
 import { User } from 'src/Documents/users/entities/user.entity';
 import { AuthService } from './auth.service';
 import { Token } from './dto/token.entity';
+import { SignInResponse } from './entities/signIn.entityResponse';
 
 @Resolver(() => User)
 export class AuthResolver {
@@ -14,10 +15,15 @@ export class AuthResolver {
     return this.authService.registration(createUserInput);
   }
 
-  @Query(() => User)
+  @Mutation(() => SignInResponse)
   signIn(
     @Args('userCredentialsInput') userCredentialsInput: userCredentialsInput,
   ) {
     return this.authService.IdentifyUser(userCredentialsInput);
+  }
+
+  @Query(() => User)
+  getUserInfo(@Args('token') token: string) {
+    return this.authService.getUserInfo(token);
   }
 }

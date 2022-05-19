@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/Documents/users/users.schema';
 import { Token } from './dto/token.entity';
 import * as bcrypt from 'bcrypt';
+import { SignInResponse } from './entities/signIn.entityResponse';
 
 @Injectable()
 export class AuthService {
@@ -16,7 +17,7 @@ export class AuthService {
 
   async IdentifyUser(
     userCredentialsInput: userCredentialsInput,
-  ): Promise<User> {
+  ): Promise<SignInResponse> {
     const candidate = await this.findUserIsExist(userCredentialsInput.login);
     if (!candidate) {
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
@@ -28,7 +29,12 @@ export class AuthService {
     if (!isPasswordMatch) {
       throw new HttpException('user not found', HttpStatus.BAD_REQUEST);
     }
-    return candidate;
+    const accessToken = await this.generateToken(candidate);
+
+    return {
+      user: candidate,
+      accessToken
+    }
   }
 
   async registration(createUserInput: CreateUserInput): Promise<Token> {
@@ -45,6 +51,11 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  async getUserInfo(token: string): Promise<User> {
+    const userData: User = await this.jwtService.verify(token, {secret: 'Some secret key'})
+    return this.userService.findOneByLogin(userData.login);
+  }
+
   private async generateToken(user: any): Promise<Token> {
     const payload = {
       login: user.login,
@@ -57,7 +68,7 @@ export class AuthService {
     };
   }
 
-  private async findUserIsExist(login: string) {
+  private async findUserIsExist(login: string): Promise<any> {
     const existUser = await this.userService.findOneByLogin(login);
     return existUser;
   }

@@ -22,18 +22,18 @@ type Token {
   expiresIn: String!
 }
 
+type SignInResponse {
+  accessToken: Token!
+  user: User!
+}
+
 type Query {
   messages: [Message!]!
   message(id: Int!): Message!
   users: [User!]!
   user(id: Int!): User!
   userByLogin(login: String!): User!
-  signIn(userCredentialsInput: userCredentialsInput!): User!
-}
-
-input userCredentialsInput {
-  login: String!
-  password: String!
+  getUserInfo(token: String!): User!
 }
 
 type Mutation {
@@ -44,6 +44,7 @@ type Mutation {
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
   signUp(createUserInput: CreateUserInput!): Token!
+  signIn(userCredentialsInput: userCredentialsInput!): SignInResponse!
 }
 
 input CreateMessageInput {
@@ -72,4 +73,9 @@ input UpdateUserInput {
   login: String
   password: String
   id: Int!
+}
+
+input userCredentialsInput {
+  login: String!
+  password: String!
 }
