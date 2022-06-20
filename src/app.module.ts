@@ -1,9 +1,7 @@
 import { ChatModule } from './messages/messages.module';
-import { ChatGateway } from './events.gateway';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { EventsModule } from './events.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { UsersModule } from './Documents/users/users.module';
@@ -12,13 +10,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { MessagesModule } from './Documents/messages/messages.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { AuthModule } from './auth/auth.module';
+import { ChannelsModule } from './Documents/channels/channels.module';
 
 @Module({
   imports: [
-    EventsModule,
     MessagesModule,
     ChatModule,
-    UsersModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       playground: false,
@@ -26,9 +23,11 @@ import { AuthModule } from './auth/auth.module';
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     MongooseModule.forRoot(
-      'mongodb+srv://Zapilman:urazdorov12@cluster0.snu90.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+      'mongodb://localhost:27017/telegram',
     ),
     AuthModule,
+    ChannelsModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

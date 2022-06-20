@@ -31,6 +31,11 @@ export class ChatGateway {
     return message;
   }
 
+  @SubscribeMessage('connect')
+  async connection(){
+    console.log('some connect')
+  }
+
   @SubscribeMessage('findAllMessages')
   findAll() {
     return this.messagesService.findAll();

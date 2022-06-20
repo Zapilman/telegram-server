@@ -44,6 +44,7 @@ export class AuthService {
       throw new HttpException('user already exists', HttpStatus.BAD_REQUEST);
     }
     const hashedPassword = await bcrypt.hash(createUserInput.password, 5);
+    console.log(hashedPassword);
     const user = await this.userService.create({
       ...createUserInput,
       password: hashedPassword,
@@ -52,7 +53,14 @@ export class AuthService {
   }
 
   async getUserInfo(token: string): Promise<User> {
-    const userData: User = await this.jwtService.verify(token, {secret: 'Some secret key'})
+    let userData: User;
+    try{
+      userData = await this.jwtService.verify(token, {secret: 'Some secret key'})
+    }
+    catch(err){
+      throw new HttpException('token is not valid', HttpStatus.BAD_REQUEST)
+    }
+
     return this.userService.findOneByLogin(userData.login);
   }
 

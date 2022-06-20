@@ -17,6 +17,13 @@ type User {
   password: String!
 }
 
+type ChannelType {
+  id: ID!
+  members: [User!]!
+  messages: [Message!]!
+  name: String
+}
+
 type Token {
   token: String!
   expiresIn: String!
@@ -30,21 +37,27 @@ type SignInResponse {
 type Query {
   messages: [Message!]!
   message(id: Int!): Message!
-  users: [User!]!
-  user(id: Int!): User!
-  userByLogin(login: String!): User!
   getUserInfo(token: String!): User!
+  users: [User!]!
+  user(id: String!): User!
+  userByLogin(login: String!): User!
+  userChats(id: String!): [ChannelType!]
+  channels: [ChannelType!]!
+  channel(id: String!): ChannelType!
 }
 
 type Mutation {
   createMessage(createMessageInput: CreateMessageInput!): Message!
   updateMessage(updateMessageInput: UpdateMessageInput!): Message!
   removeMessage(id: Int!): Message!
+  signUp(createUserInput: CreateUserInput!): Token!
+  signIn(userCredentialsInput: userCredentialsInput!): SignInResponse!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
-  signUp(createUserInput: CreateUserInput!): Token!
-  signIn(userCredentialsInput: userCredentialsInput!): SignInResponse!
+  createChannel(createChannelInput: CreateChannelInput!): ChannelType!
+  updateChannel(updateChannelInput: UpdateChannelInput!): ChannelType!
+  removeChannel(id: Int!): ChannelType!
 }
 
 input CreateMessageInput {
@@ -66,16 +79,28 @@ input CreateUserInput {
   password: String!
 }
 
+input userCredentialsInput {
+  login: String!
+  password: String!
+}
+
 input UpdateUserInput {
   """Example field (placeholder)"""
   firstName: String
   secondName: String
   login: String
   password: String
-  id: Int!
+  id: String!
+  channel: String
 }
 
-input userCredentialsInput {
-  login: String!
-  password: String!
+input CreateChannelInput {
+  firstUser: [String!]!
+  secondUser: [String!]!
+}
+
+input UpdateChannelInput {
+  firstUser: [String!]
+  secondUser: [String!]
+  id: Int!
 }
