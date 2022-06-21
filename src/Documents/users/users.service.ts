@@ -36,7 +36,6 @@ export class UsersService {
 
   async update(updateUserInput: UpdateUserInput): Promise<User> {
     let user: User;
-    let updatedUser: User;
     let channel: Channel;
 
     try {
@@ -49,12 +48,8 @@ export class UsersService {
       throw new HttpException('invalid id', HttpStatus.BAD_REQUEST);
     }
 
-    updatedUser = await this.userModel.findOneAndUpdate({ firstName: user.firstName },
+    return this.userModel.findOneAndUpdate({ id: user['id'] },
       { channels: [...user.channels, channel]}, {returnNewDocument: true});
-
-    console.log(updatedUser);
-
-    return updatedUser;
   }
 
   remove(id: number) {
@@ -80,7 +75,8 @@ export class UsersService {
       return ({
         messages: [...channel.messages],
         members: userList,
-        name
+        name,
+        id: channel['id']
       })
     }));
 

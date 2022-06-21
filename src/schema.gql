@@ -2,11 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Message {
-  text: String!
-  authorName: String!
-}
-
 type User {
   id: ID!
 
@@ -15,6 +10,11 @@ type User {
   secondName: String!
   login: String!
   password: String!
+}
+
+type Message {
+  text: String!
+  authorName: String!
 }
 
 type ChannelType {
@@ -37,27 +37,28 @@ type SignInResponse {
 type Query {
   messages: [Message!]!
   message(id: Int!): Message!
-  getUserInfo(token: String!): User!
+  channels: [ChannelType!]!
+  channel(id: String!): ChannelType!
   users: [User!]!
   user(id: String!): User!
   userByLogin(login: String!): User!
   userChats(id: String!): [ChannelType!]
-  channels: [ChannelType!]!
-  channel(id: String!): ChannelType!
+  getUserInfo(token: String!): User!
 }
 
 type Mutation {
   createMessage(createMessageInput: CreateMessageInput!): Message!
   updateMessage(updateMessageInput: UpdateMessageInput!): Message!
   removeMessage(id: Int!): Message!
-  signUp(createUserInput: CreateUserInput!): Token!
-  signIn(userCredentialsInput: userCredentialsInput!): SignInResponse!
+  createChannel(createChannelInput: CreateChannelInput!): ChannelType!
+  updateChannel(updateChannelInput: UpdateChannelInput!): ChannelType!
+  addNewMessage(addNewMessage: AddNewMessageInput!): ChannelType!
+  removeChannel(id: Int!): ChannelType!
   createUser(createUserInput: CreateUserInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
-  createChannel(createChannelInput: CreateChannelInput!): ChannelType!
-  updateChannel(updateChannelInput: UpdateChannelInput!): ChannelType!
-  removeChannel(id: Int!): ChannelType!
+  signUp(createUserInput: CreateUserInput!): Token!
+  signIn(userCredentialsInput: userCredentialsInput!): SignInResponse!
 }
 
 input CreateMessageInput {
@@ -71,15 +72,27 @@ input UpdateMessageInput {
   id: Int!
 }
 
+input CreateChannelInput {
+  firstUser: [String!]!
+  secondUser: [String!]!
+}
+
+input UpdateChannelInput {
+  firstUser: [String!]
+  secondUser: [String!]
+  id: Int!
+}
+
+input AddNewMessageInput {
+  id: String!
+  text: String!
+  authorId: ID!
+}
+
 input CreateUserInput {
   """Example field (placeholder)"""
   firstName: String!
   secondName: String!
-  login: String!
-  password: String!
-}
-
-input userCredentialsInput {
   login: String!
   password: String!
 }
@@ -94,13 +107,7 @@ input UpdateUserInput {
   channel: String
 }
 
-input CreateChannelInput {
-  firstUser: [String!]!
-  secondUser: [String!]!
-}
-
-input UpdateChannelInput {
-  firstUser: [String!]
-  secondUser: [String!]
-  id: Int!
+input userCredentialsInput {
+  login: String!
+  password: String!
 }

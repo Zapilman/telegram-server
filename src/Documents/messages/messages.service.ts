@@ -14,8 +14,7 @@ export class MessagesService {
 
   async create(createMessageInput: CreateMessageInput) {
     const createdMessage = new this.messageModel(createMessageInput);
-    const res = await createdMessage.save();
-    return res;
+    return createdMessage.save();
   }
 
   async findAll() {

@@ -10,6 +10,8 @@ import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { MessagesService } from 'src/Documents/messages/messages.service';
 import { CreateMessageInput } from 'src/Documents/messages/dto/create-message.input';
+import { ChannelsService } from 'src/Documents/channels/channels.service';
+import { Channel } from '../Documents/channels/channels.schema';
 
 @WebSocketGateway({
   cors: {
@@ -17,7 +19,10 @@ import { CreateMessageInput } from 'src/Documents/messages/dto/create-message.in
   },
 })
 export class ChatGateway {
-  constructor(private readonly messagesService: MessagesService) {}
+  constructor(
+    private readonly messagesService: MessagesService,
+    private readonly chatService: ChannelsService
+  ) {}
 
   @WebSocketServer()
   server: Server;
@@ -31,7 +36,7 @@ export class ChatGateway {
     return message;
   }
 
-  @SubscribeMessage('connect')
+  @SubscribeMessage('connection')
   async connection(){
     console.log('some connect')
   }
@@ -54,6 +59,22 @@ export class ChatGateway {
   @SubscribeMessage('removeMessage')
   remove(@MessageBody() id: number) {
     return this.messagesService.remove(id);
+  }
+
+  @SubscribeMessage('privateMessage')
+  async privateMessage(@MessageBody() data: {to: string, chatId: string, content}, client: Socket): Promise<string> {
+    let channel: Channel;
+    try {
+      channel = await this.chatService.findOne(data.chatId);
+    } catch (err) {
+      return 'error, channel does not exist';
+    }
+
+    this.server.to(data.to).emit("private message", {
+      content: data.content,
+      from: data.chatId
+    })
+    return 'message have been sent';
   }
 
   @SubscribeMessage('join')
